@@ -8,24 +8,24 @@ mongoose.connect('mongodb://localhost:27017/movies');
 
 var movieArray = [
     {
-        name: "Movie1",
-        year: "2010",
+        name: "Pulp Fiction",
+        year: "1994",
         gender: "action"
     },
     {
-        name: "Movie1",
-        year: "2010",
+        name: "The Godfather",
+        year: "1972",
         gender: "action"
     },
     {
-        name: "Movie1",
-        year: "2010",
+        name: "Fight Club",
+        year: "1999",
         gender: "action"
     },
     {
-        name: "Movie1",
-        year: "2010",
-        gender: "action"
+        name: "Star Wars: Episode V - The Empire Strikes Back",
+        year: "1980",
+        gender: "Sci-Fi"
     }
 ];
 
@@ -35,8 +35,8 @@ Movie.remove({}, function(err,removed) {
         currentMovie.name = movieArray[i].name;
         currentMovie.year = movieArray[i].year;
         currentMovie.gender = movieArray[i].gender;
-        currentMovie.save(function(){
-            console.log("Added movie!!!");
+        currentMovie.save(function(err, movie){
+            console.log("Added movie: " + movie.name);
         });
     }
 });

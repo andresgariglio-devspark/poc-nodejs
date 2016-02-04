@@ -46,6 +46,8 @@ moviesRoute.post(function(req, res) {
 
     // Set the beer properties that came from the POST data
     movie.name = req.body.name;
+    movie.year = req.body.year;
+    movie.gender = req.body.gender;
     console.log(req.body);
     // Save the beer and check for errors
     movie.save(function(err) {
@@ -87,11 +89,10 @@ movieRoute.put(function(req, res) {
     Movie.findById(req.params.movie_id, function(err, movie) {
         if (err)
             res.send(err);
-
-        // Update the existing beer quantity
+        console.log("Movie Id: " + movie._id);
         movie.name = req.body.name;
-
-        // Save the beer and check for errors
+        movie.year = req.body.year;
+        movie.gender = req.body.gender;
         movie.save(function(err) {
             if (err)
                 res.send(err);
@@ -102,10 +103,9 @@ movieRoute.put(function(req, res) {
 });
 
 movieRoute.delete(function(req, res) {
-    movieRoute.findByIdAndRemove(req.params.movie_id, function(err) {
+    Movie.remove({"_id" : req.params.movie_id }, function(err){
         if (err)
             res.send(err);
-
         res.json({ message: 'Movie removed!' });
     });
 });
