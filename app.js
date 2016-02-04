@@ -101,9 +101,7 @@ movieRoute.put(function(req, res) {
     });
 });
 
-// Create endpoint /api/beers/:beer_id for DELETE
 movieRoute.delete(function(req, res) {
-    // Use the Beer model to find a specific beer and remove it
     movieRoute.findByIdAndRemove(req.params.movie_id, function(err) {
         if (err)
             res.send(err);
@@ -117,4 +115,6 @@ app.use('/api', router);
 
 // Start the server
 app.listen(port);
-console.log('Insert movie on port ' + port);
+
+console.log('Insert movie on port  :::   ' + port);
+//console.log("Modifying script");
