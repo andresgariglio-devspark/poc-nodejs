@@ -36,15 +36,15 @@ router.get('/', function(req, res) {
     res.json({ message: 'Default end point!' });
 });
 
-// Create a new route with the prefix /beers
+// Create a new route with the prefix /movies
 var moviesRoute = router.route('/movies');
 
-// Create endpoint /api/beers for POSTS
+// Create endpoint /api/movies for POSTS
 moviesRoute.post(function(req, res) {
-    // Create a new instance of the Beer model
+    // Create a new instance of the Movie model
     var movie = new Movie();
 
-    // Set the beer properties that came from the POST data
+    // Set the movie properties that came from the POST data
     movie.name = req.body.name;
     movie.year = req.body.year;
     movie.gender = req.body.gender;
@@ -54,14 +54,22 @@ moviesRoute.post(function(req, res) {
         if (err)
             res.send(err);
 
-        res.json({ message: 'Beer added to the locker!', data: movie });
+        res.json({ message: 'Added new movie!', data: movie });
     });
 });
 
-// Create endpoint /api/beers for GET
 moviesRoute.get(function(req, res) {
-    // Use the Beer model to find all beer
-    Movie.find(function(err, movies) {
+    var filters = {};
+    if( typeof req.query.name !== 'undefined' ){
+        filters['name'] = {'$regex': req.query.name };
+    }
+    if( typeof  req.query.year !== 'undefined'){
+        filters['year'] = {'$regex': req.query.year };
+    }
+    if( typeof req.query.gender !== 'undefined' ){
+        filters['gender'] = {'$regex': req.query.gender };
+    }
+    Movie.find(filters,function(err, movies) {
         if (err)
             res.send(err);
 
@@ -69,10 +77,8 @@ moviesRoute.get(function(req, res) {
     });
 });
 
-// Create a new route with the /beers/:beer_id prefix
 var movieRoute = router.route('/movies/:movie_id');
 
-// Create endpoint /api/beers/:beer_id for GET
 movieRoute.get(function(req, res) {
     // Use the Beer model to find a specific beer
     Movie.findById(req.params.movie_id, function(err, movie) {
@@ -83,9 +89,7 @@ movieRoute.get(function(req, res) {
     });
 });
 
-// Create endpoint /api/beers/:beer_id for PUT
 movieRoute.put(function(req, res) {
-    // Use the Beer model to find a specific beer
     Movie.findById(req.params.movie_id, function(err, movie) {
         if (err)
             res.send(err);
@@ -117,4 +121,3 @@ app.use('/api', router);
 app.listen(port);
 
 console.log('Insert movie on port  :::   ' + port);
-//console.log("Modifying script");

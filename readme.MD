@@ -13,7 +13,7 @@
     - To clean and load the date: grunt loadData
     
 ##End points:
-    - GET http://localhost:3000/api/movies/ #returns all the movies
+    - GET http://localhost:3000/api/movies/ #returns all the movies, additionally can have the following 3 query params: name, gender and year
     - GET http://localhost:3000/api/movies/:id #return a single movie by id
     - POST http://localhost:3000/api/movies #insert a movie. Remember to add the fields on the payload
     - PUT  http://localhost:3000/api/movies/:id #modifies a movie. Remember to add the fields on the payload
