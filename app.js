@@ -2,10 +2,10 @@
 var express = require('express');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
-var Movie = require('./models/movie');
+var Person = require('./models/person');
 
 // Connect to the beerlocker MongoDB
-mongoose.connect('mongodb://localhost:27017/movies');
+mongoose.connect('mongodb://localhost:27017/poc');
 
 // Create our Express application
 var app = express();
@@ -36,88 +36,105 @@ router.get('/', function(req, res) {
     res.json({ message: 'Default end point!' });
 });
 
-// Create a new route with the prefix /movies
-var moviesRoute = router.route('/movies');
+// Create a new route with the prefix /persons
+var personsRoute = router.route('/persons');
 
-// Create endpoint /api/movies for POSTS
-moviesRoute.post(function(req, res) {
-    // Create a new instance of the Movie model
-    var movie = new Movie();
+// Create endpoint /api/persons for POSTS
+personsRoute.post(function(req, res) {
+    // Create a new instance of the Person model
+    var person = new Person();
 
-    // Set the movie properties that came from the POST data
-    movie.name = req.body.name;
-    movie.year = req.body.year;
-    movie.gender = req.body.gender;
+    // Set the person properties that came from the POST data
+    person.firstName = req.body.firstName;
+    person.lastName = req.body.lastName;
     console.log(req.body);
+
     // Save the beer and check for errors
-    movie.save(function(err) {
-        if (err)
-            res.send(err);
+    person.save(function(err) {
+        if (err) {
+            return res.status(400).send(err);
+        }
 
-        res.json({ message: 'Added new movie!', data: movie });
+        res.json({ message: 'Added new person!', data: person });
     });
 });
 
-moviesRoute.get(function(req, res) {
+personsRoute.get(function(req, res) {
     var filters = {};
-    if( typeof req.query.name !== 'undefined' ){
-        filters['name'] = {'$regex': req.query.name };
+    if( typeof req.query.firstName !== 'undefined' ){
+        filters['firstName'] = {'$regex': req.query.firstName };
     }
-    if( typeof  req.query.year !== 'undefined'){
-        filters['year'] = {'$regex': req.query.year };
+    if( typeof  req.query.lastName !== 'undefined'){
+        filters['lastName'] = {'$regex': req.query.lastName };
     }
-    if( typeof req.query.gender !== 'undefined' ){
-        filters['gender'] = {'$regex': req.query.gender };
-    }
-    Movie.find(filters,function(err, movies) {
+    Person.find(filters,function(err, persons) {
         if (err)
             res.send(err);
 
-        res.json(movies);
+        res.json(persons);
     });
 });
 
-var movieRoute = router.route('/movies/:movie_id');
+var personRoute = router.route('/persons/:person_id');
 
-movieRoute.get(function(req, res) {
+personRoute.get(function(req, res) {
     // Use the Beer model to find a specific beer
-    Movie.findById(req.params.movie_id, function(err, movie) {
+    Person.findById(req.params.person_id, function(err, person) {
         if (err)
             res.send(err);
 
-        res.json(movie);
+        if (!person) {
+          return res.status(404).send({ error: 'Not found' });
+        }
+
+        res.json(person);
     });
 });
 
-movieRoute.put(function(req, res) {
-    Movie.findById(req.params.movie_id, function(err, movie) {
+personRoute.put(function(req, res) {
+    Person.findById(req.params.person_id, function(err, person) {
         if (err)
             res.send(err);
-        console.log("Movie Id: " + movie._id);
-        movie.name = req.body.name;
-        movie.year = req.body.year;
-        movie.gender = req.body.gender;
-        movie.save(function(err) {
-            if (err)
-                res.send(err);
 
-            res.json(movie);
+        if (!person) {
+          return res.status(404).send({ error: 'Not found' });
+        }
+
+        console.log("Person Id: " + person._id);
+        person.firstName = req.body.firstName;
+        person.lastName = req.body.lastName;
+
+        person.save(function(err) {
+          if (err) {
+              return res.status(400).send(err);
+          }
+
+          res.json(person);
         });
     });
 });
 
-movieRoute.delete(function(req, res) {
-    Movie.remove({"_id" : req.params.movie_id }, function(err){
+personRoute.delete(function(req, res) {
+
+    Person.findById(req.params.person_id, function(err, person) {
         if (err)
             res.send(err);
-        res.json({ message: 'Movie removed!' });
+
+        if (!person) {
+            return res.status(404).send({ error: 'Not found' });
+        }
+
+        person.remove(function(err) {
+            if (err)
+                res.send(err);
+
+            res.json({ message: 'Person removed!' });
+        });
     });
 });
 
 // Register all our routes with /api
-app.use('/api', router);
+app.use('/', router);
 
 // Start the server
 app.listen(port);
-
-console.log('Insert movie on port  :::   ' + port);

@@ -7,15 +7,11 @@ module.exports = function(grunt) {
         execute: {
             target: {
                 src: ['app.js']
-            },
-            loadData:{
-                src: ['loadData.js']
             }
         }
     });
 
     grunt.loadNpmTasks('grunt-execute');
-    grunt.registerTask('loadData', ['execute:loadData']);
     grunt.registerTask('default', ['execute:target']);
 
 };

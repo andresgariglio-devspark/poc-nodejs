@@ -5,7 +5,7 @@
  */
 
 var app = require('../app');
-var debug = require('debug')('movies-api:server');
+var debug = require('debug')('persons-api:server');
 var http = require('http');
 
 /**
