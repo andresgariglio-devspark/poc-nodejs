@@ -1,20 +1,43 @@
-##Requirements:
-    - MongoDB https://www.mongodb.org/downloads#production
-    - Node.js
-    - NPM (should be configured on the system PATH variable)
+# poc-nodejs
+POC Rest API using nodejs and expressjs that allows you to create, update and retrieve Person objects stored in a MongoDB NoSQL database.
 
-##Commands to execute before start the application:
-    - npm install
+## Configuration
+Default MongoDB config in app.js file:
 
-*Application will start on http://localhost:3000
+```
+mongoose.connect('mongodb://localhost:27017/poc');
+```
+
+## How to run
+Install packages/dependencies: 
+```
+npm install
+```
+
+Run grunt, you should be able to visit the rest service at http://localhost:3000 and get an "OK" status.
+```
+grunt
+```
+
+## Rest API examples
+GET
+```
+curl http://localhost:3000/persons
+curl http://localhost:3000/persons/{ID}
+```
+
+POST
+```
+curl -i -X POST -H "Content-Type:application/json" -d '{  "firstName" : "Marty",  "lastName" : "McFly" }' http://localhost:3000/persons
+```
+
+PUT
+```
+curl -X PUT -H "Content-Type:application/json" -d '{ "firstName": "Emmett", "lastName": "Brown" }' http://localhost:3000/persons/{ID}
+```
+
+DELETE
+```
+curl -X DELETE http://localhost:3000/persons/{ID}
+```
     
-##Grunt tasks:
-    - To start the application: grunt
-    - To clean and load the date: grunt loadData
-    
-##End points:
-    - GET http://localhost:3000/api/movies/ #returns all the movies, additionally can have the following 3 query params: name, gender and year
-    - GET http://localhost:3000/api/movies/:id #return a single movie by id
-    - POST http://localhost:3000/api/movies #insert a movie. Remember to add the fields on the payload
-    - PUT  http://localhost:3000/api/movies/:id #modifies a movie. Remember to add the fields on the payload
-    - DELETE http://localhost:3000/api/movies/:id #Deletes a movie
